@@ -1,0 +1,6 @@
+{
+    "use_default": false,
+    "include_claim_keys": [
+      "job_workflow_ref"
+    ]
+  }

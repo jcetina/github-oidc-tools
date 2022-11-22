@@ -1,5 +1,5 @@
 {
-    "Url": "token.actions.githubusercontent.com",
+    "Url": "https://token.actions.githubusercontent.com",
     "ClientIDList": [
         "sts.amazonaws.com"
     ],

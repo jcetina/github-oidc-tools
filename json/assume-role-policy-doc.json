@@ -1,0 +1,22 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "1",
+            "Effect": "Allow",
+            "Principal": {
+                "Federated": "OIDC_PROVIDER_ARN"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+                    "token.actions.githubusercontent.com:sub": [
+                        "job_workflow_ref:ORG/REPO/.github/workflows/aws-caller-id.yml@refs/heads/BRANCH"
+                    ]
+                }
+            }
+        }
+    ]
+  }
+  

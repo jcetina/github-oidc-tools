@@ -57,18 +57,25 @@ set_branch_protection() {
 
 }
 
-set_collaborator() {
-    echo "Setting $3 as a collaborator on $1/$2"
-    confirm
-    gh api -X PUT "repos/${1}/${2}/collaborators/${3}" \
-        --input ./json/admin-permission.json
-}
+# set_collaborator() {
+#     echo "Setting $3 as a collaborator on $1/$2"
+#     confirm
+#     gh api -X PUT "repos/${1}/${2}/collaborators/${3}" \
+#         --input ./json/admin-permission.json
+# }
 
 set_default_branch() {
     echo "Setting default branch for $1/$2 to $3"
     confirm
     gh api -X PATCH "repos/${1}/${2}" \
         --input <(echo '{"default_branch": "${3}"}')
+}
+
+set_custom_oidc_template() {
+    echo "Setting custom OIDC template for $1/$2"
+    confirm
+    gh api -X PUT "repos/${1}/${2}/actions/oidc/customization/sub" \
+     --input json/custom-subject-claims.json
 }
 
 ## AWS functions
@@ -81,9 +88,22 @@ create_aws_gh_oidc_provider() {
         echo "Creating AWS OIDC provider for GitHub"
         confirm
         aws iam create-open-id-connect-provider \
-        --url https://token.actions.githubusercontent.com \
-        --thumbprint-list 6938fd4d98bab03faadb97b34396831e3780aea1 \
+        --cli-input-json file://$1 \
         --profile $aws_profile        
+    fi
+}
+
+create_iam_role() {
+    aws iam get-role --role-name $1 --profile $aws_profile
+    if [ $? -eq 0 ]; then
+        echo "IAM role already exists"
+    else
+        echo "Creating IAM role $1"
+        confirm
+        aws iam create-role \
+            --role-name $1 \
+            --assume-role-policy-document file://$2 \
+            --profile $aws_profile 2>&1 > /dev/null
     fi
 }
 

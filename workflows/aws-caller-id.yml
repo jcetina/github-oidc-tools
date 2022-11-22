@@ -1,0 +1,32 @@
+name: "Caller ID"
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read
+
+on:
+  push:
+    branches:
+      - BRANCH
+
+jobs:
+  caller-id:
+    name: Get Caller Identity
+    runs-on: ubuntu-latest
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: AWS_ROLE_TO_ASSUME
+        aws-region: us-east-1
+
+    - name: Get caller id
+      run: |
+        aws sts get-caller-identity
