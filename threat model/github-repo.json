@@ -1,0 +1,755 @@
+{
+  "summary": {
+    "title": "GitHub Repo Actions/OIDC Threat Model",
+    "owner": "jcetina@"
+  },
+  "detail": {
+    "contributors": [],
+    "diagrams": [
+      {
+        "title": "Data Flow Diagram",
+        "thumbnail": "./public/content/images/thumbnail.stride.jpg",
+        "diagramType": "STRIDE",
+        "id": 0,
+        "$$hashKey": "object:14",
+        "diagramJson": {
+          "cells": [
+            {
+              "type": "tm.Store",
+              "size": {
+                "width": 160,
+                "height": 80
+              },
+              "position": {
+                "x": 1081,
+                "y": 219
+              },
+              "angle": 0,
+              "id": "afef09cb-080b-456f-a2de-397bcfc03ab5",
+              "z": 1,
+              "hasOpenThreats": false,
+              "storesCredentials": true,
+              "threats": [
+                {
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "modelType": "STRIDE",
+                  "title": "Cloud credentials issued to unauthorized workflows",
+                  "type": "Elevation of privilege",
+                  "threatId": "4d5e943d-f440-4147-955b-1b48b7301827",
+                  "$$hashKey": "object:421",
+                  "description": "Only designated Actions workflows should be allowed to acquire third party credentials via OIDC",
+                  "mitigation": "1. Configure the subject claim at the repo or org level to include job_workflow_ref as part of the subject claim. The job_workflow_ref field includes the repo, file path, and branch of the the workflow that initiated the OIDC request.\n\n2. Configure the relying party (e.g. the cloud provider) to only allow credential issuance to the job_workflow_refs that are authorized to acquire credentials (e.g. \"job_workflow_ref:octo-org/octo-automation/.github/workflows/oidc.yml@refs/heads/main\")"
+                }
+              ],
+              "attrs": {
+                ".element-shape": {
+                  "class": "element-shape hasNoOpenThreats isInScope"
+                },
+                "text": {
+                  "text": "cloud iam role"
+                },
+                ".element-text": {
+                  "class": "element-text hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Store",
+              "size": {
+                "width": 160,
+                "height": 80
+              },
+              "position": {
+                "x": 1083,
+                "y": 344
+              },
+              "angle": 0,
+              "id": "3aa2884f-d844-4b71-9299-7c967e54a8db",
+              "z": 2,
+              "hasOpenThreats": false,
+              "attrs": {
+                ".element-shape": {
+                  "class": "element-shape hasNoOpenThreats isInScope"
+                },
+                "text": {
+                  "text": "cloud accoun"
+                },
+                ".element-text": {
+                  "class": "element-text hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Boundary",
+              "size": {
+                "width": 10,
+                "height": 10
+              },
+              "smooth": true,
+              "source": {
+                "x": 1063,
+                "y": 98
+              },
+              "target": {
+                "x": 985,
+                "y": 498
+              },
+              "vertices": [],
+              "id": "28d95b2c-35a5-4536-8277-24e0a2b7ce59",
+              "z": 3,
+              "attrs": {}
+            },
+            {
+              "type": "tm.Store",
+              "size": {
+                "width": 160,
+                "height": 80
+              },
+              "position": {
+                "x": 454,
+                "y": 243
+              },
+              "angle": 0,
+              "id": "e3cac463-b711-45b7-bad4-f46a143376a8",
+              "z": 4,
+              "hasOpenThreats": false,
+              "attrs": {
+                ".element-shape": {
+                  "class": "element-shape hasNoOpenThreats isInScope"
+                },
+                "text": {
+                  "text": "repo"
+                },
+                ".element-text": {
+                  "class": "element-text hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Process",
+              "size": {
+                "width": 100,
+                "height": 100
+              },
+              "position": {
+                "x": 496,
+                "y": 425
+              },
+              "angle": 0,
+              "id": "fbc36c7d-0393-4bdb-a773-2ffedfa6954d",
+              "z": 7,
+              "hasOpenThreats": false,
+              "threats": [],
+              "attrs": {
+                ".element-shape": {
+                  "class": "element-shape hasNoOpenThreats isInScope"
+                },
+                "text": {
+                  "text": "repo workflow"
+                },
+                ".element-text": {
+                  "class": "element-text hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Flow",
+              "size": {
+                "width": 10,
+                "height": 10
+              },
+              "smooth": true,
+              "source": {
+                "id": "e3cac463-b711-45b7-bad4-f46a143376a8"
+              },
+              "target": {
+                "id": "fbc36c7d-0393-4bdb-a773-2ffedfa6954d"
+              },
+              "vertices": [],
+              "id": "3d35e948-c9c3-4ca0-9237-76cffb873918",
+              "labels": [
+                {
+                  "position": 0.5,
+                  "attrs": {
+                    "text": {
+                      "text": "trigger",
+                      "font-weight": "400",
+                      "font-size": "small"
+                    }
+                  }
+                }
+              ],
+              "z": 8,
+              "hasOpenThreats": false,
+              "description": "pr, issue, merge, pull, etc",
+              "attrs": {
+                ".marker-target": {
+                  "class": "marker-target hasNoOpenThreats isInScope"
+                },
+                ".connection": {
+                  "class": "connection hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Store",
+              "size": {
+                "width": 160,
+                "height": 80
+              },
+              "position": {
+                "x": 833,
+                "y": 51
+              },
+              "angle": 0,
+              "id": "ee401fa3-75b1-42e1-ab16-97fb2c96463d",
+              "z": 9,
+              "hasOpenThreats": false,
+              "description": "where the repo gets an OIDC token from",
+              "attrs": {
+                ".element-shape": {
+                  "class": "element-shape hasNoOpenThreats isInScope"
+                },
+                "text": {
+                  "text": "oidc service endpoint"
+                },
+                ".element-text": {
+                  "class": "element-text hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Flow",
+              "size": {
+                "width": 10,
+                "height": 10
+              },
+              "smooth": true,
+              "source": {
+                "id": "fbc36c7d-0393-4bdb-a773-2ffedfa6954d"
+              },
+              "target": {
+                "id": "ee401fa3-75b1-42e1-ab16-97fb2c96463d"
+              },
+              "vertices": [],
+              "id": "092913ad-f2f7-4f12-a936-98e85896ed43",
+              "labels": [
+                {
+                  "position": 0.5,
+                  "attrs": {
+                    "text": {
+                      "text": "get OIDC token",
+                      "font-weight": "400",
+                      "font-size": "small"
+                    }
+                  }
+                }
+              ],
+              "z": 10,
+              "hasOpenThreats": false,
+              "attrs": {
+                ".marker-target": {
+                  "class": "marker-target hasNoOpenThreats isInScope"
+                },
+                ".connection": {
+                  "class": "connection hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Flow",
+              "size": {
+                "width": 10,
+                "height": 10
+              },
+              "smooth": true,
+              "source": {
+                "id": "fbc36c7d-0393-4bdb-a773-2ffedfa6954d"
+              },
+              "target": {
+                "id": "afef09cb-080b-456f-a2de-397bcfc03ab5"
+              },
+              "vertices": [],
+              "id": "340c66b6-710c-4395-98ea-500a89af0564",
+              "labels": [
+                {
+                  "position": 0.5,
+                  "attrs": {
+                    "text": {
+                      "text": "get cloud creds via\nOIDC",
+                      "font-weight": "400",
+                      "font-size": "small"
+                    }
+                  }
+                }
+              ],
+              "z": 11,
+              "hasOpenThreats": false,
+              "attrs": {
+                ".marker-target": {
+                  "class": "marker-target hasNoOpenThreats isInScope"
+                },
+                ".connection": {
+                  "class": "connection hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Boundary",
+              "size": {
+                "width": 10,
+                "height": 10
+              },
+              "smooth": true,
+              "source": {
+                "x": 675,
+                "y": 48
+              },
+              "target": {
+                "x": 977,
+                "y": 240
+              },
+              "vertices": [],
+              "id": "b3504a3a-d769-4861-999c-cbbf56dad385",
+              "z": 12,
+              "attrs": {}
+            },
+            {
+              "type": "tm.Actor",
+              "size": {
+                "width": 160,
+                "height": 80
+              },
+              "position": {
+                "x": 22,
+                "y": 244
+              },
+              "angle": 0,
+              "id": "f932d955-31ab-4077-9ec8-ae611a001d6d",
+              "z": 13,
+              "hasOpenThreats": false,
+              "description": "an authorized repo contributor with write access",
+              "attrs": {
+                ".element-shape": {
+                  "class": "element-shape hasNoOpenThreats isInScope"
+                },
+                "text": {
+                  "text": "repo contributor"
+                },
+                ".element-text": {
+                  "class": "element-text hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Boundary",
+              "size": {
+                "width": 10,
+                "height": 10
+              },
+              "smooth": true,
+              "source": {
+                "x": 272,
+                "y": 72
+              },
+              "target": {
+                "x": 432,
+                "y": 729
+              },
+              "vertices": [
+                {
+                  "x": 283,
+                  "y": 188
+                }
+              ],
+              "id": "91cdfb82-f769-40e1-98e2-e623cec5d79a",
+              "z": 14,
+              "attrs": {}
+            },
+            {
+              "type": "tm.Process",
+              "size": {
+                "width": 100,
+                "height": 100
+              },
+              "position": {
+                "x": 192,
+                "y": 376
+              },
+              "angle": 0,
+              "id": "2ad51cfe-0966-4635-a0c9-a1e9724b18aa",
+              "z": 15,
+              "hasOpenThreats": false,
+              "threats": [
+                {
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "modelType": "STRIDE",
+                  "title": "Update protected workflow without approval",
+                  "type": "Tampering",
+                  "description": "A user could modify an existing workflow that is authorized to acquire cloud credentials in order to exploit the trust that the relying party (cloud provider) has placed in the workflow.",
+                  "mitigation": "Overall, we need to be extra cautious about protecting workflow files in the repo using multiple branch protection features. The appropriate branch protection mitigations are to:\n\n1. Require a PR with at least one reviewer before merging.\n2. Dismiss stale pull request approvals when new commits are pushed\n3. If code owners is configured, require a review from code owners\n4. Disallow bypass of pull requests\n5. Require approval of the most recent push\n6. (Unsure given #2) - Ignore approving reviews from pull request contributors\n7. Do not allow bypassing the above settings\n8. Disallow force pushes",
+                  "threatId": "673d5b1d-5eb4-42f8-8cce-e459cbda7de8",
+                  "$$hashKey": "object:454"
+                }
+              ],
+              "attrs": {
+                ".element-shape": {
+                  "class": "element-shape hasNoOpenThreats isInScope"
+                },
+                "text": {
+                  "text": "merge\nworkflow from\nnew branch"
+                },
+                ".element-text": {
+                  "class": "element-text hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Flow",
+              "size": {
+                "width": 10,
+                "height": 10
+              },
+              "smooth": true,
+              "source": {
+                "id": "f932d955-31ab-4077-9ec8-ae611a001d6d"
+              },
+              "target": {
+                "id": "2ad51cfe-0966-4635-a0c9-a1e9724b18aa"
+              },
+              "vertices": [
+                {
+                  "x": 172,
+                  "y": 373
+                }
+              ],
+              "id": "61f6a755-8385-4bac-aff1-d3df3d447beb",
+              "labels": [
+                {
+                  "position": 0.5,
+                  "attrs": {
+                    "text": {
+                      "text": "modify trusted\nworkflow",
+                      "font-weight": "400",
+                      "font-size": "small"
+                    }
+                  }
+                }
+              ],
+              "z": 16,
+              "hasOpenThreats": false,
+              "attrs": {
+                ".marker-target": {
+                  "class": "marker-target hasNoOpenThreats isInScope"
+                },
+                ".connection": {
+                  "class": "connection hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Flow",
+              "size": {
+                "width": 10,
+                "height": 10
+              },
+              "smooth": true,
+              "source": {
+                "id": "2ad51cfe-0966-4635-a0c9-a1e9724b18aa"
+              },
+              "target": {
+                "id": "e3cac463-b711-45b7-bad4-f46a143376a8"
+              },
+              "vertices": [],
+              "id": "e503ca07-158a-4305-97c6-15dff8f26d4d",
+              "labels": [
+                {
+                  "position": 0.5,
+                  "attrs": {
+                    "text": {
+                      "text": "add worfklow in new\nbranch",
+                      "font-weight": "400",
+                      "font-size": "small"
+                    }
+                  }
+                }
+              ],
+              "z": 17,
+              "hasOpenThreats": false,
+              "attrs": {
+                ".marker-target": {
+                  "class": "marker-target hasNoOpenThreats isInScope"
+                },
+                ".connection": {
+                  "class": "connection hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Process",
+              "size": {
+                "width": 100,
+                "height": 100
+              },
+              "position": {
+                "x": 98,
+                "y": 93
+              },
+              "angle": 0,
+              "id": "de08b87b-2aff-4fd2-86e8-589189a010a4",
+              "z": 19,
+              "hasOpenThreats": false,
+              "threats": [
+                {
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "modelType": "STRIDE",
+                  "title": "Update protected workflow without approval",
+                  "type": "Tampering",
+                  "threatId": "5ee7ba4c-f457-44ce-9e43-6b448f503390",
+                  "$$hashKey": "object:55",
+                  "description": "A user could modify an existing workflow that is authorized to acquire cloud credentials in order to exploit the trust that the relying party (cloud provider) has placed in the workflow.",
+                  "mitigation": "Overall, we need to be extra cautious about protecting workflow files in the repo using multiple branch protection features. The appropriate branch protection mitigations are to:\n\n1. Require a PR with at least one reviewer before merging.\n2. Dismiss stale pull request approvals when new commits are pushed\n3. If code owners is configured, require a review from code owners\n4. Disallow bypass of pull requests\n5. Require approval of the most recent push\n6. (Unsure given #2) - Ignore approving reviews from pull request contributors\n7. Do not allow bypassing the above settings\n8. Disallow force pushes"
+                }
+              ],
+              "attrs": {
+                ".element-shape": {
+                  "class": "element-shape hasNoOpenThreats isInScope"
+                },
+                "text": {
+                  "text": "push directly to\nmain branch"
+                },
+                ".element-text": {
+                  "class": "element-text hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Flow",
+              "size": {
+                "width": 10,
+                "height": 10
+              },
+              "smooth": true,
+              "source": {
+                "id": "f932d955-31ab-4077-9ec8-ae611a001d6d"
+              },
+              "target": {
+                "id": "de08b87b-2aff-4fd2-86e8-589189a010a4"
+              },
+              "vertices": [],
+              "id": "cfa2ecdc-1895-4774-9546-cf7bcd97fc2a",
+              "labels": [
+                {
+                  "position": 0.5,
+                  "attrs": {
+                    "text": {
+                      "text": "modify trusted\nworkflow",
+                      "font-weight": "400",
+                      "font-size": "small"
+                    }
+                  }
+                }
+              ],
+              "z": 20,
+              "hasOpenThreats": false,
+              "attrs": {
+                ".marker-target": {
+                  "class": "marker-target hasNoOpenThreats isInScope"
+                },
+                ".connection": {
+                  "class": "connection hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Flow",
+              "size": {
+                "width": 10,
+                "height": 10
+              },
+              "smooth": true,
+              "source": {
+                "id": "de08b87b-2aff-4fd2-86e8-589189a010a4"
+              },
+              "target": {
+                "id": "e3cac463-b711-45b7-bad4-f46a143376a8"
+              },
+              "vertices": [],
+              "id": "cfa49fa6-847a-413e-8574-ebe02a5e5ae3",
+              "labels": [
+                {
+                  "position": 0.5,
+                  "attrs": {
+                    "text": {
+                      "text": "psuh directly to main",
+                      "font-weight": "400",
+                      "font-size": "small"
+                    }
+                  }
+                }
+              ],
+              "z": 21,
+              "hasOpenThreats": false,
+              "attrs": {
+                ".marker-target": {
+                  "class": "marker-target hasNoOpenThreats isInScope"
+                },
+                ".connection": {
+                  "class": "connection hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Actor",
+              "size": {
+                "width": 160,
+                "height": 80
+              },
+              "position": {
+                "x": 12,
+                "y": 542
+              },
+              "angle": 0,
+              "id": "8050de6d-e9d3-4e24-bc18-f9ecdd09e0da",
+              "z": 22,
+              "hasOpenThreats": false,
+              "attrs": {
+                ".element-shape": {
+                  "class": "element-shape hasNoOpenThreats isInScope"
+                },
+                "text": {
+                  "text": "Repo admin"
+                },
+                ".element-text": {
+                  "class": "element-text hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Process",
+              "size": {
+                "width": 100,
+                "height": 100
+              },
+              "position": {
+                "x": 265,
+                "y": 738
+              },
+              "angle": 0,
+              "id": "de673180-d7a3-4b37-a788-89be05711513",
+              "z": 23,
+              "hasOpenThreats": true,
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "modelType": "STRIDE",
+                  "type": "Tampering",
+                  "title": "Rogue admin deletes branch protection rules",
+                  "description": "A rogue admin could delete branch protection rules, thus removing 2 party review requirements for workflows",
+                  "mitigation": "None",
+                  "threatId": "0c26be0a-d6ac-4ae6-867f-f58be05f3716",
+                  "$$hashKey": "object:497"
+                }
+              ],
+              "attrs": {
+                ".element-shape": {
+                  "class": "element-shape hasOpenThreats isInScope"
+                },
+                "text": {
+                  "text": "modifies or\ndeletes branch\nprotections"
+                },
+                ".element-text": {
+                  "class": "element-text hasOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Flow",
+              "size": {
+                "width": 10,
+                "height": 10
+              },
+              "smooth": true,
+              "source": {
+                "id": "de673180-d7a3-4b37-a788-89be05711513"
+              },
+              "target": {
+                "id": "e3cac463-b711-45b7-bad4-f46a143376a8"
+              },
+              "vertices": [],
+              "id": "5ab2900a-6e56-4e35-894a-b883f590751b",
+              "labels": [
+                {
+                  "position": 0.5,
+                  "attrs": {
+                    "text": {
+                      "text": "pushes updated\nbranch protection\nrules",
+                      "font-weight": "400",
+                      "font-size": "small"
+                    }
+                  }
+                }
+              ],
+              "z": 24,
+              "hasOpenThreats": false,
+              "attrs": {
+                ".marker-target": {
+                  "class": "marker-target hasNoOpenThreats isInScope"
+                },
+                ".connection": {
+                  "class": "connection hasNoOpenThreats isInScope"
+                }
+              }
+            },
+            {
+              "type": "tm.Flow",
+              "size": {
+                "width": 10,
+                "height": 10
+              },
+              "smooth": true,
+              "source": {
+                "id": "8050de6d-e9d3-4e24-bc18-f9ecdd09e0da"
+              },
+              "target": {
+                "id": "de673180-d7a3-4b37-a788-89be05711513"
+              },
+              "vertices": [],
+              "id": "ecaf8db7-24bd-4871-9581-8dff8d138d4d",
+              "labels": [
+                {
+                  "position": 0.5,
+                  "attrs": {
+                    "text": {
+                      "text": "branch protection\nchanges",
+                      "font-weight": "400",
+                      "font-size": "small"
+                    }
+                  }
+                }
+              ],
+              "z": 25,
+              "hasOpenThreats": false,
+              "attrs": {
+                ".marker-target": {
+                  "class": "marker-target hasNoOpenThreats isInScope"
+                },
+                ".connection": {
+                  "class": "connection hasNoOpenThreats isInScope"
+                }
+              }
+            }
+          ]
+        },
+        "size": {
+          "height": 1052,
+          "width": 1416
+        }
+      }
+    ]
+  }
+}
