@@ -1,0 +1,11 @@
+[
+    {
+        "name": "push",
+        "issuer": "https://token.actions.githubusercontent.com",
+        "subject": "job_workflow_ref:ORG/REPO/.github/workflows/azure-account-show.yml@refs/heads/BRANCH",
+        "description": "action-in-protected-branch",
+        "audiences": [
+            "api://AzureADTokenExchange"
+        ]
+    }
+]

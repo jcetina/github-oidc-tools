@@ -33,8 +33,8 @@ set_custom_oidc_template $org $repo
 #Configure and commit the workflow after custom oidc claims are set
 OIDC_TOOLS_AWS_ACCOUNT_ID=$(get_account_id)
 OIDC_TOOLS_ROLE_ARN="arn:aws:iam::${OIDC_TOOLS_AWS_ACCOUNT_ID}:role/${OIDC_TOOLS_ROLE_NAME}"
-sed 's|AWS_ROLE_TO_ASSUME|'"${OIDC_TOOLS_ROLE_ARN}"'|g' workflows/aws-caller-id.yml > $OIDC_TOOLS_TEMPDIR/repo_source/.github/workflows/aws-caller-id.yml
-sed -i '' 's|BRANCH|'"${branch}"'|g' $OIDC_TOOLS_TEMPDIR/repo_source/.github/workflows/aws-caller-id.yml
+sed 's|BRANCH|'"${branch}"'|g' workflows/aws-caller-id.yml > $OIDC_TOOLS_TEMPDIR/repo_source/.github/workflows/aws-caller-id.yml
+set_repo_secret "AWS_ROLE_TO_ASSUME" "${OIDC_TOOLS_ROLE_ARN}" "${org}" "${repo}"
 OIDC_TOOLS_PWD=$(pwd)
 cd $OIDC_TOOLS_TEMPDIR/repo_source/
 git init -b "${branch}"

@@ -33,6 +33,15 @@ requirements_check() {
 
 
 ## GitHub functions
+check_codespaces() {
+    IS_CODESPACE=${CODESPACES:-"false"}
+    if $IS_CODESPACE == "true"
+    then
+        echo "This script doesn't work in GitHub Codespaces.  See this issue for updates. https://github.com/Azure/azure-cli/issues/21025 "
+        exit 0
+    fi
+}
+
 get_default_branch() {
     gh api "repos/${1}/${2}" | jq -r '.default_branch'
 }
@@ -76,6 +85,13 @@ set_custom_oidc_template() {
     confirm
     gh api -X PUT "repos/${1}/${2}/actions/oidc/customization/sub" \
      --input json/custom-subject-claims.json
+}
+
+set_repo_secret() {
+    gh secret set $1 --body "${2}" --repo "${3}/${4}"
+    if [ $? -eq 1 ]; then
+        echo "Failed to set secret. Exiting."
+    fi
 }
 
 ## AWS functions
@@ -130,6 +146,102 @@ handle_aws_auth() {
     fi
 }
 
+## Azure functions
+azure_login() {
+    echo "Logging in to Azure"
+    az login
+    if [ $? != 0 ]; then
+        echo "Login failed. Please check your credentials."
+        exit
+    fi
+}
 
+handle_azure_auth() {
+    echo "Checking Azure CLI authentication status"
+    echo "The profile you choose requires Azure AD write permissions to create the proper Azure IAM resources."
+    echo "Checking login status:"
+    az ad signed-in-user show
+    if [ $? != 0 ]; then
+        echo "You are not logged in. Please log in to Azure CLI."
+        azure_login
+    fi
+    az account list --query "[].[id, name]" -o table
+    echo "This script will create a resource group in this subscription, and grant the identity for your repo admin access to it."
+    read -p "Please select a subscription uuid from the list above? [default: None] " azure_subscription
+    az account show -s $azure_subscription
+    if [ $? != 0 ]; then
+        echo "Invalid subscription entered. Exiting."
+        exit
+    fi
+}
 
+create_azure_ad_app() {
+    echo "Creating AD app ${1}"
+    confirm
+    APP_ID=$(az ad app create --display-name ${1} --query appId -o tsv)
+    if [ $? != 0 ]; then
+        echo "App creation failed. Exiting."
+        exit
+    fi
+    echo "Sleeping for 30 seconds to give time for the APP to be created."
+    sleep 30
+}
 
+create_azure_ad_sp() {
+    echo "Creating Service Principal for ${1}"
+    confirm
+    SP_ID=$(az ad sp create --id $APP_ID --query id -o tsv)
+
+    if [ $? != 0 ]; then
+        echo "SP creation failed. Exiting."
+        exit
+    fi
+    echo "Sleeping for 30 seconds to give time for the SP to be created."
+    sleep 30
+}
+
+create_azure_rg() {
+    echo "Creating resource group ${1}"
+    confirm
+    RG_ID=$(az group create --name "${1}" --location eastus --subscription $azure_subscription --query id -o tsv)
+    if [ $? != 0 ]; then
+        echo "Resource group creation failed. Exiting."
+        exit
+    fi
+    echo "Sleeping for 30 seconds to give time for the RG to be created."
+    sleep 30
+}
+
+create_role_assignment() {
+    echo "Creating role assignment for ${1}"
+    confirm
+    az role assignment create --assignee "${SP_ID}" --role "Contributor" --scope "${RG_ID}"
+    if [ $? != 0 ]; then
+        echo "Role assignment failed. Exiting."
+        exit
+    fi
+}
+
+created_federated_creds() {
+    for FIC in $(cat "${1}" | jq -c '.[]'); do
+        SUBJECT=$(jq -r '.subject' <<< "$FIC")
+        
+        echo "Creating FIC with subject '${SUBJECT}'."
+        az ad app federated-credential create --id  $APP_ID --parameters ${FIC}
+        if [ $? != 0 ]; then
+            echo "FIC creation failed. Exiting."
+            exit
+        fi
+    done
+}
+
+get_tenant_id() {
+    az account show --query tenantId -o tsv
+}
+
+set_azure_secrets() {
+    TENANT_ID=$(az account show --query tenantId -o tsv)
+    set_repo_secret "AZURE_CLIENT_ID" "${APP_ID}" "${1}" "${2}"
+    set_repo_secret "AZURE_SUBSCRIPTION_ID" "${azure_subscription}" "${1}" "${2}"
+    set_repo_secret "AZURE_TENANT_ID" "${TENANT_ID}" "${1}" "${2}"
+}
