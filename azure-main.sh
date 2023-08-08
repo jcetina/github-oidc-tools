@@ -11,7 +11,7 @@ handle_gh_auth
 
 read -p "What org do you want to create the repo in? " org
 read -p "What do you want to name the repo? " repo
-read -p "What do you maint to name the main branch? [default: main] " branch
+read -p "What do you want to name the main branch? [default: main] " branch
 branch=${branch:-main}
 
 # ### Azure Resource Creation
